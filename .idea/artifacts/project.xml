@@ -3,8 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/project</output-path>
     <root id="archive" name="project.jar">
       <element id="module-output" name="project" />
-      <element id="library" level="project" name="lwjgl" />
-      <element id="library" level="project" name="PNGDecoder" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/lwjgl.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
