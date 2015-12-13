@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="project">
+    <output-path>$PROJECT_DIR$/out/artifacts/project</output-path>
+    <root id="archive" name="project.jar">
+      <element id="module-output" name="project" />
+      <element id="library" level="project" name="lwjgl" />
+      <element id="library" level="project" name="PNGDecoder" />
+    </root>
+  </artifact>
+</component>
