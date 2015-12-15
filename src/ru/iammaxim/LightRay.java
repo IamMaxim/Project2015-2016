@@ -8,6 +8,7 @@ import static org.lwjgl.opengl.GL11.glEnd;
 import static org.lwjgl.opengl.GL11.glVertex2f;
 import static ru.iammaxim.DrawUtils.getNormalizedCoord;
 import static ru.iammaxim.Physics.mirrors;
+import static ru.iammaxim.Physics.ray;
 import static ru.iammaxim.Physics.segmentIntersect;
 
 /**
@@ -15,7 +16,7 @@ import static ru.iammaxim.Physics.segmentIntersect;
  */
 public class LightRay {
     public float x, y, rotation, length, width;
-    public coord2D lc,rc,ct,cb,lt,rt,lb,rb,tmp1,tmp2;
+    public coord2D ct,cb,lt,rt,lb,rb,tmp1,tmp2;
     public Color3 color;
     public static int MAX_RAYS_COUNT = 32;
     public static int CURRENT_RAYS_COUNT = 0;
@@ -39,7 +40,7 @@ public class LightRay {
 
     public void updateCoords(float length) {
         cb = new coord2D(x, y);
-        tmp1 = new coord2D(Math.cos(rotation) * width / 2,Math.sin(rotation) * width / 2);
+        tmp1 = new coord2D(Math.cos(rotation) * width / 2,-Math.sin(rotation) * width / 2);
         tmp2 = new coord2D(Math.sin(rotation) * length, Math.cos(rotation) * length);
         rb = new coord2D(cb).plus(tmp1);
         lb = new coord2D(cb).minus(tmp1);
@@ -52,7 +53,7 @@ public class LightRay {
         updateCoords((float)Math.sqrt((x - intersect.x)*(x - intersect.x) + (y - intersect.y)*(y - intersect.y)));
     }
 
-    public void calculateCollision() {
+    public void calculateCollision(LightRay ray) {
         boolean rayEnded = false;
         List<Intersect> intersects = new ArrayList<>();
         coord2D tmp1;
@@ -60,33 +61,32 @@ public class LightRay {
         updateCoords();
 
         for (Mirror mirror : mirrors) {
-            if ((tmp1 = segmentIntersect(cb, ct, mirror.lt, mirror.rt)) != null) intersects.add(new Intersect(tmp1, Intersect.Side.top, mirror.rotation));
-            if ((tmp1 = segmentIntersect(cb, ct, mirror.lb, mirror.rb)) != null) intersects.add(new Intersect(tmp1, Intersect.Side.bottom, mirror.rotation));
-            if ((tmp1 = segmentIntersect(cb, ct, mirror.lt, mirror.lb)) != null) intersects.add(new Intersect(tmp1, Intersect.Side.left, mirror.rotation));
-            if ((tmp1 = segmentIntersect(cb, ct, mirror.rt, mirror.rb)) != null) intersects.add(new Intersect(tmp1, Intersect.Side.right, mirror.rotation));
+            if ((tmp1 = segmentIntersect(cb, ct, mirror.lt, mirror.rt)) != null) intersects.add(new Intersect(tmp1, Intersect.Side.top, mirror.rotation, mirror.x, mirror.y));
+            if ((tmp1 = segmentIntersect(cb, ct, mirror.lb, mirror.rb)) != null) intersects.add(new Intersect(tmp1, Intersect.Side.bottom, mirror.rotation, mirror.x, mirror.y));
+            if ((tmp1 = segmentIntersect(cb, ct, mirror.lt, mirror.lb)) != null) intersects.add(new Intersect(tmp1, Intersect.Side.left, mirror.rotation, mirror.x, mirror.y));
+            if ((tmp1 = segmentIntersect(cb, ct, mirror.rt, mirror.rb)) != null) intersects.add(new Intersect(tmp1, Intersect.Side.right, mirror.rotation, mirror.x, mirror.y));
         }
 
         for (Intersect intersect : intersects) {
             double tmp = Math.sqrt((intersect.x - x) * (intersect.x - x) + (intersect.y - y) * (intersect.y - y));
-            if ((tmp < (Math.sqrt(minIntersect.x * minIntersect.x + minIntersect.y * minIntersect.y))) && tmp > 5)
+            if ((tmp < (Math.sqrt((minIntersect.x - x) * (minIntersect.x - x) + (minIntersect.y - y) * (minIntersect.y - y)))) && tmp > 1)
                 minIntersect = intersect;
         }
         if (minIntersect.x != Intersect.INTERSECT_DEF_X) {
-            //System.out.println("Intersect: " + minIntersect.side);
             setEndPoint(minIntersect);
-            if (minIntersect.side != Intersect.Side.top) {
-                rayEnded = true;
-            } else {
+            if (minIntersect.side == Intersect.Side.top) {
                 if (CURRENT_RAYS_COUNT <= MAX_RAYS_COUNT) {
                     CURRENT_RAYS_COUNT++;
-                    float _rotation = (180 + minIntersect.mirrorRotation / (float)Math.PI * 180) * (float)Math.PI / 180 - rotation;
-                    System.out.println(_rotation);
+                    float _rotation = (2 * minIntersect.mirrorRotation - ray.rotation - (float)Math.PI + 2*(float)Math.PI) % (2*(float)Math.PI);
+                    //if (UIframework.isOutAllowed)
+                        //System.out.println("Intersect: "+minIntersect.x + " " + minIntersect.y + " " + _rotation / (float)Math.PI * 180);
                     LightRay newRay = new LightRay(minIntersect.x, minIntersect.y, _rotation);
-                    newRay.calculateCollision();
+                    newRay.calculateCollision(newRay);
                 }
             }
         }
         Draw();
+        //System.out.println("Ray: "+x+", "+y+", "+rotation / (float)Math.PI * 180);
     }
 
     public void Draw() {

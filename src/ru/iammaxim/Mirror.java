@@ -19,11 +19,11 @@ public class Mirror {
     public Color3 color = new Color3();
 
     public Mirror() {
-        this(0, 0, 0, 100, 50);
+        this(0, 0, 0, 200, 50);
     }
 
     public Mirror(float x, float y) {
-        this(x, y, 0, 100, 50);
+        this(x, y, 0, 300, 25);
     }
 
     public Mirror(float x, float y, float rotation, float width, float thickness) {
@@ -33,6 +33,7 @@ public class Mirror {
         this.width = width;
         this.thickness = thickness;
         color = new Color3(0, 1, 1);
+        //System.out.println("New mirror: "+x+", "+y+", "+rotation);
     }
 
     public void setRotation(float rotation) {
@@ -40,7 +41,8 @@ public class Mirror {
     }
 
     public void rotate(float rotation) {
-        this.rotation += rotation * (float)Math.PI / 180;
+        this.rotation += (360 + rotation)/180 * (float)Math.PI;
+        this.rotation %= 2 * (float)Math.PI;
     }
 
     public void setEnabled(boolean isEnabled) {
@@ -55,16 +57,6 @@ public class Mirror {
     }
 
     public void updateCoords() {
-        /*
-        lc = new coord2D((float) (x - Math.cos(rotation) * width / 2), (float) (y - Math.sin(rotation) * width / 2));
-        rc = new coord2D().minus(lc);
-        ct = new coord2D((float) (x - Math.sin(rotation) * thickness / 2), (float) (y + Math.cos(rotation) * thickness / 2));
-        cb = new coord2D().minus(ct);
-        lt = new coord2D(lc).plus(ct);
-        rt = new coord2D(rc).plus(ct);
-        rb = new coord2D(rc).minus(ct);
-        lb = new coord2D(lc).minus(ct);
-        */
 
         tmp1 = new coord2D(Math.cos(rotation) * width / 2,Math.sin(rotation) * width / 2);
         tmp2 = new coord2D(Math.sin(rotation) * thickness / 2, Math.cos(rotation) * thickness / 2);
@@ -73,9 +65,9 @@ public class Mirror {
         ct = new coord2D(x - tmp2.x, y + tmp2.y);
         cb = new coord2D(x + tmp2.x, y - tmp2.y);
         lt = new coord2D(lc).plus(tmp2);
-        rt = new coord2D(rc.x, rc.y).plus(tmp2);
+        rt = new coord2D(rc).plus(tmp2);
         rb = new coord2D(rc).minus(tmp2);
-        lb = new coord2D(lc.x, lc.y).minus(tmp2);
+        lb = new coord2D(lc).minus(tmp2);
     }
 
     public static void add(List<Mirror> mirrors) {
@@ -83,12 +75,7 @@ public class Mirror {
     }
 
     public void Draw() {
-        /*
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textures[0]);
-        */
         glColor3f(color.r, color.g, color.b);
-        //glBindTexture(GL11.GL_TEXTURE_2D, textures[0]);
         glBegin(GL_POLYGON);
         glVertex2f(getNormalizedCoord(lt).x, getNormalizedCoord(lt).y);
         glVertex2f(getNormalizedCoord(rt).x, getNormalizedCoord(rt).y);

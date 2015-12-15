@@ -6,7 +6,10 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.opengl.GL;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -87,21 +90,23 @@ public class Main {
         });
         //LoadTextures();
 
-        mirrors = new ArrayList<Mirror>();
+        mirrors = new ArrayList<>();
         Mirror.add(mirrors);
-        mirrors.get(0).setEnabled(true);
+       // mirrors.get(0).setEnabled(true);
 
-        ray = new LightRay();
+        ray = new LightRay(0, 0, 60 * (float)Math.PI / 180);
     }
 
     private void loop() {
         GL.createCapabilities();
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        for (Mirror mirror : mirrors) mirror.updateCoords();
         Draw();
         while (glfwWindowShouldClose(window_handle) == GLFW_FALSE) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             LightRay.CURRENT_RAYS_COUNT = 0;
-            ray.calculateCollision();
+            for (Mirror mirror : mirrors) mirror.updateCoords();
+            ray.calculateCollision(ray);
             Draw();
             glfwSwapBuffers(window_handle);
             glfwPollEvents();
@@ -111,7 +116,7 @@ public class Main {
     private void Draw() {
         for (Mirror mirror: mirrors) {
             if (mirror.isEnabled) {
-                mirror.updateCoords();
+                //mirror.updateCoords();
                 mirror.Draw();
             }
         }
@@ -129,6 +134,7 @@ public class Main {
     }
 
     private void parseKeyboardInput(int key) {
+//        System.out.println(key);
         switch (key) {
             case 45:
                 for (Mirror mirror : mirrors) {
@@ -140,6 +146,18 @@ public class Main {
                     if (mirror.isSelected) mirror.rotate(5);
                 }
                 break;
+            case 91:
+                ray.rotation += -5 * (float)Math.PI / 180;
+                break;
+            case 93:
+                ray.rotation += 5 * (float)Math.PI / 180;
+                break;
+            case 49:
+                //Mirror.add(mirrors);
+                mirrors.add(new Mirror((float)mousePosX, (float)mousePosY));
+                break;
+            case 32:
+                UIframework.isOutAllowed = !UIframework.isOutAllowed;
             default:
                 break;
         }
