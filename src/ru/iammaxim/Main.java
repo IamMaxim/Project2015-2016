@@ -94,7 +94,7 @@ public class Main {
         Mirror.add(mirrors);
        // mirrors.get(0).setEnabled(true);
 
-        ray = new LightRay(0, 0, 60 * (float)Math.PI / 180);
+        ray = new LightRay(0, 0, 60 * (float)Math.PI / 180, 1);
     }
 
     private void loop() {

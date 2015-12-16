@@ -18,20 +18,22 @@ public class LightRay {
     public float x, y, rotation, length, width;
     public coord2D ct,cb,lt,rt,lb,rb,tmp1,tmp2;
     public Color3 color;
-    public static int MAX_RAYS_COUNT = 32;
+    public static int MAX_RAYS_COUNT = 50;
     public static int CURRENT_RAYS_COUNT = 0;
+    public float intensity = 1;
 
     public LightRay() {
-        this(0,0,0);
+        this(0, 0, 0 , 1);
     }
 
-    public LightRay(float x, float y, float rotation) {
+    public LightRay(float x, float y, float rotation, float intensity) {
         this.x = x;
         this.y = y;
         this.rotation = rotation;
+        this.intensity = intensity;
         length = 10000;
         width = 4;
-        color = new Color3(1, 1, 1);
+        color = new Color3(1 * intensity, 1 * intensity, 1 * intensity);
     }
 
     public void updateCoords() {
@@ -80,7 +82,7 @@ public class LightRay {
                     float _rotation = (2 * minIntersect.mirrorRotation - ray.rotation - (float)Math.PI + 2*(float)Math.PI) % (2*(float)Math.PI);
                     //if (UIframework.isOutAllowed)
                         //System.out.println("Intersect: "+minIntersect.x + " " + minIntersect.y + " " + _rotation / (float)Math.PI * 180);
-                    LightRay newRay = new LightRay(minIntersect.x, minIntersect.y, _rotation);
+                    LightRay newRay = new LightRay(minIntersect.x, minIntersect.y, _rotation, intensity - 0.02f);
                     newRay.calculateCollision(newRay);
                 }
             }
