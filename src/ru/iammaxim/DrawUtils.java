@@ -2,13 +2,8 @@ package ru.iammaxim;
 
 import org.lwjgl.glfw.GLFWVidMode;
 
-import java.util.Set;
-
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 
-/**
- * Created by Maxim on 12.12.2015.
- */
 public class DrawUtils {
     public static int width, height;
     public static float scale_factor = 1;

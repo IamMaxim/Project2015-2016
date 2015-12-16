@@ -1,8 +1,5 @@
 package ru.iammaxim;
 
-/**
- * Created by Maxim on 12.12.2015.
- */
 public class Color3 {
     public float r,g,b;
     public Color3() {

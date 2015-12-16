@@ -3,9 +3,6 @@ package ru.iammaxim;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Maxim on 13.12.2015.
- */
 public class Physics {
     public static List<Mirror> mirrors;
     public static LightRay ray;

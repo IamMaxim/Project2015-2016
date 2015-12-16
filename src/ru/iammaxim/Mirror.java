@@ -9,9 +9,6 @@ import static org.lwjgl.opengl.GL11.*;
 import static ru.iammaxim.DrawUtils.getNormalizedCoord;
 import static ru.iammaxim.DrawUtils.textures;
 
-/**
- * Created by Maxim on 12.12.2015.
- */
 public class Mirror {
     public float x, y, rotation, width, thickness;
     public boolean isEnabled = true, isSelected = false;
@@ -33,7 +30,6 @@ public class Mirror {
         this.width = width;
         this.thickness = thickness;
         color = new Color3(0, 1, 1);
-        //System.out.println("New mirror: "+x+", "+y+", "+rotation);
     }
 
     public void setRotation(float rotation) {

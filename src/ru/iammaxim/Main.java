@@ -5,12 +5,7 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.opengl.GL;
-
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Scanner;
-
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -88,12 +83,9 @@ public class Main {
                 moveMirror();
             }
         });
-        //LoadTextures();
 
         mirrors = new ArrayList<>();
         Mirror.add(mirrors);
-       // mirrors.get(0).setEnabled(true);
-
         ray = new LightRay(0, 0, 60 * (float)Math.PI / 180, 1);
     }
 
@@ -116,13 +108,9 @@ public class Main {
     private void Draw() {
         for (Mirror mirror: mirrors) {
             if (mirror.isEnabled) {
-                //mirror.updateCoords();
                 mirror.Draw();
             }
         }
-        //ray.updateCoords();
-        //ray.Draw();
-
         glFlush();
     }
 
@@ -134,7 +122,6 @@ public class Main {
     }
 
     private void parseKeyboardInput(int key) {
-//        System.out.println(key);
         switch (key) {
             case 45:
                 for (Mirror mirror : mirrors) {
@@ -153,7 +140,6 @@ public class Main {
                 ray.rotation += 5 * (float)Math.PI / 180;
                 break;
             case 49:
-                //Mirror.add(mirrors);
                 mirrors.add(new Mirror((float)mousePosX, (float)mousePosY));
                 break;
             case 32:
@@ -178,36 +164,6 @@ public class Main {
             }
         }
     }
-
-    /*
-    private void LoadTextures() {
-        int textures_count = 1;
-        textures = new int[textures_count];
-        texture_units = new int[textures_count];
-        try {
-            InputStream is = new FileInputStream(System.getProperty("user.dir") + "\\UIButton_base.png");
-            PNGDecoder decoder = new PNGDecoder(is);
-            ByteBuffer buf = null;
-            int tWidth = decoder.getWidth();
-            int tHeight = decoder.getHeight();
-            buf = ByteBuffer.allocateDirect(4 * tWidth * tHeight);
-            decoder.decode(buf, tWidth * 4, PNGDecoder.Format.RGBA);
-            buf.flip();
-            is.close();
-            textures[0] = GL11.glGenTextures();
-            GL13.glActiveTexture(GL13.GL_TEXTURE0);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textures[0]);
-            GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            exitApp();
-        } catch (IOException e) {
-            e.printStackTrace();
-            exitApp();
-        }
-    }
-    */
 
     private void exitApp() {
         glfwSetWindowShouldClose(window_handle, GLFW_TRUE);

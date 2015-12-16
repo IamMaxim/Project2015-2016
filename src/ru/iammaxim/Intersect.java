@@ -1,8 +1,5 @@
 package ru.iammaxim;
 
-/**
- * Created by Maxim on 13.12.2015.
- */
 public class Intersect {
     public float x, y;
     public Side side;

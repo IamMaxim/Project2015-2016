@@ -8,17 +8,13 @@ import static org.lwjgl.opengl.GL11.glEnd;
 import static org.lwjgl.opengl.GL11.glVertex2f;
 import static ru.iammaxim.DrawUtils.getNormalizedCoord;
 import static ru.iammaxim.Physics.mirrors;
-import static ru.iammaxim.Physics.ray;
 import static ru.iammaxim.Physics.segmentIntersect;
 
-/**
- * Created by Maxim on 12.12.2015.
- */
 public class LightRay {
     public float x, y, rotation, length, width;
     public coord2D ct,cb,lt,rt,lb,rb,tmp1,tmp2;
     public Color3 color;
-    public static int MAX_RAYS_COUNT = 50;
+    public static int MAX_RAYS_COUNT = 256;
     public static int CURRENT_RAYS_COUNT = 0;
     public float intensity = 1;
 
@@ -56,7 +52,6 @@ public class LightRay {
     }
 
     public void calculateCollision(LightRay ray) {
-        boolean rayEnded = false;
         List<Intersect> intersects = new ArrayList<>();
         coord2D tmp1;
         Intersect minIntersect = new Intersect();
@@ -80,15 +75,12 @@ public class LightRay {
                 if (CURRENT_RAYS_COUNT <= MAX_RAYS_COUNT) {
                     CURRENT_RAYS_COUNT++;
                     float _rotation = (2 * minIntersect.mirrorRotation - ray.rotation - (float)Math.PI + 2*(float)Math.PI) % (2*(float)Math.PI);
-                    //if (UIframework.isOutAllowed)
-                        //System.out.println("Intersect: "+minIntersect.x + " " + minIntersect.y + " " + _rotation / (float)Math.PI * 180);
-                    LightRay newRay = new LightRay(minIntersect.x, minIntersect.y, _rotation, intensity - 0.02f);
+                    LightRay newRay = new LightRay(minIntersect.x, minIntersect.y, _rotation, intensity * 0.95f);
                     newRay.calculateCollision(newRay);
                 }
             }
         }
         Draw();
-        //System.out.println("Ray: "+x+", "+y+", "+rotation / (float)Math.PI * 180);
     }
 
     public void Draw() {
